@@ -834,10 +834,6 @@ function defineFieldMap<TSource, TContext>(
       `${config.name}.${fieldName} field config must be an object.`,
     );
     devAssert(
-      !('isDeprecated' in fieldConfig),
-      `${config.name}.${fieldName} should provide "deprecationReason" instead of "isDeprecated".`,
-    );
-    devAssert(
       fieldConfig.resolve == null || typeof fieldConfig.resolve === 'function',
       `${config.name}.${fieldName} field resolver must be a function if ` +
         `provided, but got: ${inspect(fieldConfig.resolve)}.`,
@@ -865,7 +861,6 @@ function defineFieldMap<TSource, TContext>(
       args,
       resolve: fieldConfig.resolve,
       subscribe: fieldConfig.subscribe,
-      isDeprecated: fieldConfig.deprecationReason != null,
       deprecationReason: fieldConfig.deprecationReason,
       extensions: fieldConfig.extensions && toObjMap(fieldConfig.extensions),
       astNode: fieldConfig.astNode,
@@ -1002,9 +997,6 @@ export type GraphQLField<
   deprecationReason: ?string,
   extensions: ?ReadOnlyObjMap<mixed>,
   astNode: ?FieldDefinitionNode,
-
-  // @deprecated and will be removed in v16
-  isDeprecated: boolean,
 |};
 
 export type GraphQLArgument = {|
@@ -1430,15 +1422,10 @@ function defineEnumValues(
       `${typeName}.${valueName} must refer to an object with a "value" key ` +
         `representing an internal value but got: ${inspect(valueConfig)}.`,
     );
-    devAssert(
-      !('isDeprecated' in valueConfig),
-      `${typeName}.${valueName} should provide "deprecationReason" instead of "isDeprecated".`,
-    );
     return {
       name: valueName,
       description: valueConfig.description,
       value: valueConfig.value !== undefined ? valueConfig.value : valueName,
-      isDeprecated: valueConfig.deprecationReason != null,
       deprecationReason: valueConfig.deprecationReason,
       extensions: valueConfig.extensions && toObjMap(valueConfig.extensions),
       astNode: valueConfig.astNode,
@@ -1472,9 +1459,6 @@ export type GraphQLEnumValue /* <T> */ = {|
   deprecationReason: ?string,
   extensions: ?ReadOnlyObjMap<mixed>,
   astNode: ?EnumValueDefinitionNode,
-
-  // @deprecated and will be removed in v16
-  isDeprecated: boolean,
 |};
 
 /**
